@@ -1,0 +1,50 @@
+* Z:\home\dl10yr\Dropbox\Analog_Design_ML\opamp\template\test-OpAmp-P-SR.asc
+VDD VDD 0 {half}
+R1 os N001 10k
+VSS 0 VSS {half}
+R2 N001 0 10k
+VIN1 N002 0 PULSE({-vp} {vp} 100n {vp*0.01n} {vp*0.01n} 300u 400u 1)
+R3 out2 N003 10k
+R4 N003 0 10k
+VIN2 N004 0 PULSE({vp} {-vp} 100n {vp*0.01n} {vp*0.01n} 300u 400u 1)
+R5 out1 N005 10k
+R6 N005 0 10k
+XX2 0 N001 VDD VSS os opamp-ml params: opamp-ML
+XX3 N002 N003 VDD VSS out2 opamp-ml params: opamp-ML
+XX4 N004 N005 VDD VSS out1 opamp-ml params: opamp-ML
+
+* block symbol definitions
+.subckt opamp-ml vinp vinm vdd vss vout
+M1 N003 N004 vss vss NMOS l=0.2u w=3.4u m=1
+M3 N001 vinm N003 N003 NMOS l=0.2u w=4.6u m=1
+M4 vout N004 vss vss NMOS l=0.2u w=20.4u m=1
+M2 N002 vinp N003 N003 NMOS l=0.2u w=4.6u m=1
+M5 vdd N001 N002 vdd PMOS l=0.2u w=3.0u m=1
+M6 vdd N001 N001 vdd PMOS l=0.2u w=3.0u m=1
+M7 vdd N002 vout NC_01 PMOS l=0.2u w=37.8u m=1
+C1 N002 vout 0.3p
+M8 N004 N004 vss vss NMOS l=0.2u w=1.7u m=1
+R1 vdd N004 100k
+.include tsmc018.lib
+.ends opamp-ml
+
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\users\dl10yr\My Documents\LTspiceXVII\lib\cmp\standard.mos
+.param half=1.5
+.tran 0 200u 0
+.meas tran vps find V(out1)-V(os) at=0
+.meas tran vpt find V(out1)-V(os) at=200u
+.meas tran vns find V(out2)-V(os) at=0
+.meas tran vnt find V(out2)-V(os) at=200u
+.meas tran srr1 deriv V(out1)-V(os) when (V(out1)-V(os))=0.9*vps
+.meas tran srr2 deriv V(out1)-V(os) when (V(out1)-V(os))=0
+.meas tran srr3 deriv V(out1)-V(os) when (V(out1)-V(os))=0.9*vpt
+.meas tran srr param=(srr1+srr2+srr3)/3
+.meas tran srf1 deriv V(out2)-V(os) when (V(out2)-V(os))=0.9*vns
+.meas tran srf2 deriv V(out2)-V(os) when (V(out2)-V(os))=0
+.meas tran srf3 deriv V(out2)-V(os) when (V(out2)-V(os))=0.9*vnt
+.meas tran srf param=(srf1+srf2+srf3)/3
+.meas tran sr-value param=min(abs(srr),abs(srf))
+.backanno
+.end

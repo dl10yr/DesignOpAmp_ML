@@ -1,0 +1,27 @@
+* Z:\home\dl10yr\Dropbox\Analog_Design_ML\opamp\template\test-OpAmp-P.asc
+V1 VDD 0 {half}
+VIN VINP 0 0
+R1 OUT N001 10k
+V3 0 VSS {half}
+R2 N001 0 10k
+XX1 VINP N001 VDD VSS OUT opamp-ml params: opamp-ML
+
+* block symbol definitions
+.subckt opamp-ml vinp vinm vdd vss vout
+M1 N003 vdd vss vss NMOS l=1u w=1u m=2
+M3 N001 vinp N003 N003 NMOS l=1u w=1u m=16
+M4 vout vdd vss vss NMOS l=1u w=1u m=40
+M2 N002 vinm N003 N003 NMOS l=1u w=1u m=16
+M5 vdd N001 N002 vdd PMOS l=1u w=1u m=2
+M6 vdd N001 N001 vdd PMOS l=1u w=1u m=2
+M7 vdd N002 vout NC_01 PMOS l=1u w=1u m=80
+C1 N002 vout 0.5p
+M8 vdd vdd vss vss NMOS l=1u w=1u m=2
+.include tsmc018.lib
+.ends opamp-ml
+
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\users\dl10yr\My Documents\LTspiceXVII\lib\cmp\standard.mos
+.backanno
+.end

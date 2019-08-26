@@ -1,0 +1,52 @@
+* Z:\home\dl10yr\Dropbox\Analog_Design_ML\opamp\template\test-OpAmp-VICM.asc
+V1 VDD 0 {half}
+V3 0 VSS {half}
+R1 N001 VIN 10k
+R2 VOUT1 N001 20k
+R3 N003 VIN 10k
+R4 0 N003 10k
+R5 0 N002 20k
+VIN VIN 0
+E1 VOUT1 0 N002 0 10
+R6 N004 N005 10k
+R7 VOUT2 N004 20k
+R10 0 N006 20k
+E2 VOUT2 0 N006 0 10
+R8 N008 N009 10k
+R9 VOUTos N008 20k
+R11 0 N010 20k
+V5 N009 0 {v}
+E3 VOUTos 0 N010 0 10
+R12 N007 N005 10k
+R13 0 N007 10k
+E4 N005 0 VIN 0 -1
+XX1 N007 N004 VDD VSS N006 opamp-ml params: opamp-ML
+XX2 0 N008 VDD VSS N010 opamp-ml params: opamp-ML
+XX3 N003 N001 VDD VSS N002 opamp-ml params: opamp-ML
+
+* block symbol definitions
+.subckt opamp-ml vinp vinm vdd vss vout
+M1 N003 N004 vss vss NMOS l=0.2u w=3.4u m=1
+M3 N001 vinm N003 N003 NMOS l=0.2u w=4.6u m=1
+M4 vout N004 vss vss NMOS l=0.2u w=20.4u m=1
+M2 N002 vinp N003 N003 NMOS l=0.2u w=4.6u m=1
+M5 vdd N001 N002 vdd PMOS l=0.2u w=3.0u m=1
+M6 vdd N001 N001 vdd PMOS l=0.2u w=3.0u m=1
+M7 vdd N002 vout NC_01 PMOS l=0.2u w=37.8u m=1
+C1 N002 vout 0.3p
+M8 N004 N004 vss vss NMOS l=0.2u w=1.7u m=1
+R1 vdd N004 100k
+.include tsmc018.lib
+.ends opamp-ml
+
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\users\dl10yr\My Documents\LTspiceXVII\lib\cmp\standard.mos
+.param half=1.5
+.dc VIN 10m {2*half} {(2*half-10m)/100}
+.MEAS DC Virpp Find V(VIN) When 1-(ABS(V(vout1)-V(voutos)))/(0.5*V(vin))=0.05
+.MEAS DC Virpn Find V(VIN) When 1-(ABS(V(vout1)-V(voutos)))/(0.5*V(vin))=-0.05
+.MEAS DC Virnp Find V(VIN) When 1-(ABS(V(vout2)-V(vos)))/(0.5*V(vin))=0.05
+.MEAS DC Virnn Find V(VIN) When 1-(ABS(V(vout2)-V(voutos)))/(0.5*V(vin))=-0.05
+.backanno
+.end

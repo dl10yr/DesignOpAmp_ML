@@ -1,0 +1,17 @@
+* Z:\home\dl10yr\Dropbox\Analog_Design_ML\opamp\template\opamp-ml.asc
+M1 N003 N004 vss vss NMOS l=0.2u w=10.989071595504488u m=1
+M3 N001 vinm N003 N003 NMOS l=0.2u w=14.354996637000097u m=1
+M4 vout N004 vss vss NMOS l=0.2u w=142.18835722916404u m=1
+M2 N002 vinp N003 N003 NMOS l=0.2u w=14.354996637000097u m=1
+M5 vdd N001 N002 vdd PMOS l=0.2u w=7.731263668488042u m=1
+M6 vdd N001 N001 vdd PMOS l=0.2u w=7.731263668488042u m=1
+M7 vdd N002 vout NC_01 PMOS l=0.2u w=198.43349227660607u m=1
+C1 N002 vout 0.3p
+M8 N004 N004 vss vss NMOS l=0.2u w=7.8402726633556945u m=1
+R1 vdd N004 898.1905560923415k
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\users\dl10yr\My Documents\LTspiceXVII\lib\cmp\standard.mos
+.include tsmc018.lib
+.backanno
+.end

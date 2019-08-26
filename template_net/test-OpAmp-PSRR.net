@@ -1,0 +1,43 @@
+* Z:\home\dl10yr\Dropbox\Analog_Design_ML\opamp\template\test-OpAmp-PSRR.asc
+V1 VDD 0 {half}
+V2 N001 0 AC 1 0
+R1 Vod N002 1T
+V3 0 VSS {half}
+R2 Vod 0 20k
+C1 N002 0 1m
+R3 Vodd N003 1T
+R4 Vodd 0 20k
+C2 N003 0 1m
+R5 Voss N004 1T
+R6 Voss 0 20k
+C3 N004 0 1m
+VIN1 VDD VDD1 AC 1 0
+VIN2 VSS1 VSS AC 1 0
+XX1 N001 N002 VDD VSS Vod opamp-ml params: opamp-ML
+XX2 0 N003 VDD1 VSS Vodd opamp-ml params: opamp-ML
+XX3 0 N004 VDD VSS1 Voss opamp-ml params: opamp-ML
+
+* block symbol definitions
+.subckt opamp-ml vinp vinm vdd vss vout
+M1 N003 N004 vss vss NMOS l=0.2u w=3.4u m=1
+M3 N001 vinm N003 N003 NMOS l=0.2u w=4.6u m=1
+M4 vout N004 vss vss NMOS l=0.2u w=20.4u m=1
+M2 N002 vinp N003 N003 NMOS l=0.2u w=4.6u m=1
+M5 vdd N001 N002 vdd PMOS l=0.2u w=3.0u m=1
+M6 vdd N001 N001 vdd PMOS l=0.2u w=3.0u m=1
+M7 vdd N002 vout NC_01 PMOS l=0.2u w=37.8u m=1
+C1 N002 vout 0.3p
+M8 N004 N004 vss vss NMOS l=0.2u w=1.7u m=1
+R1 vdd N004 100k
+.include tsmc018.lib
+.ends opamp-ml
+
+.model NMOS NMOS
+.model PMOS PMOS
+.lib C:\users\dl10yr\My Documents\LTspiceXVII\lib\cmp\standard.mos
+.ac dec 100 0.1 10G
+.param half=1.5
+.meas AC PSRRP FIND mag(V(Vod))/mag(V(Vodd)) AT 0.1
+.meas AC PSRRM FIND mag(V(Vod))/mag(V(Voss)) AT 0.1
+.backanno
+.end
